@@ -1,0 +1,10 @@
+*.zip
+*.json
+*.mp3
+*.part
+library/
+cache/
+data/
+cookies.txt
+yt-dlp-download.history
+yt-dlp.batch
