@@ -1,5 +1,11 @@
 # YouTube Music Downloader
 
+@@TODO: GET SECOND TAKEOUT! 
+
+@@TODO: GET SECOND TAKEOUT! 
+
+@@TODO: GET SECOND TAKEOUT! 
+
 This project automatically downloads music from your YouTube watch history. It relies on the [yt-dlp](https://github.com/yt-dlp/yt-dlp) command-line utility.
 
 ## Prerequisites
@@ -7,9 +13,6 @@ This project automatically downloads music from your YouTube watch history. It r
 - [yt-dlp](https://github.com/yt-dlp/yt-dlp) must be installed and available in your system's PATH.
 
 ## Setup Instructions
-
-### Security Note
-> **⚠️ WARNING:** Your `cookies.txt` file contains sensitive session information. Treat it like a password and **do not share it**. Do not commit it to version control.
 
 ### Step 1: Download Google Takeout Data
 
@@ -21,20 +24,16 @@ This project automatically downloads music from your YouTube watch history. It r
 6. When your archive is ready, download and extract it.
 7. Copy the `watch-history.json` file from `Takeout/YouTube and YouTube Music/` into your local `./data/` folder in this project.
 
-### Step 2: Get a Browser Extension
+### Step 2: Ensure you are logged into YouTube
 
-You need an extension that can export cookies in the "Netscape" format. A popular choice is **Get cookies.txt** (available for Chrome and Firefox).
+> **Note on Cookies:** You do **not** need a browser extension to manually export `cookies.txt`! This script is natively configured to dynamically extract your active YouTube session cookie directly from Google Chrome Beta's internal database (`~/.config/google-chrome-beta/Default`). 
+> 
+> If the cookies expire mid-download, the script will automatically restart itself to fetch fresh ones from Chrome.
 
-### Step 3: Export Your Cookies
-
-1. Make sure you are logged into your YouTube/Google account in your browser.
+1. Open **Google Chrome Beta**.
 2. Go to [www.youtube.com](https://www.youtube.com).
-3. Click the "Get cookies.txt" extension icon in your browser's toolbar and click **Copy**. This will copy the cookie data to your clipboard.
-
-### Step 4: Create the `cookies.txt` File
-
-1. Create a new text file named `cookies.txt` inside your local `./data/` folder.
-2. Paste the copied cookie data into this file and save it.
+3. Ensure you are logged into your Google/YouTube account.
+4. Leave Chrome running in the background while the script runs so your session remains active.
 
 ## Running the Script
 

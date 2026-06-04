@@ -104,9 +104,10 @@ def main():
         "--download-archive", "yt-dlp-download.history",
         "--restrict-filenames",
         "--no-overwrites",
+        "--no-post-overwrites",
         "--part",
         "--mtime",
-        "--cookies", "data/cookies.txt",
+        "--cookies-from-browser", "chrome:~/.config/google-chrome-beta/Default",
         "--cache-dir", "./cache/",
         "--extract-audio",
         "--audio-format", "mp3",
@@ -128,14 +129,34 @@ def main():
     os.makedirs("library/", exist_ok=True)
     
     try:
-        subprocess.run(cmd, check=True)
-    except subprocess.CalledProcessError as e:
-        # Exit code 101 means max downloads reached
-        if e.returncode == 101:
-            print("yt-dlp stopped early because max downloads was reached (exit code 101).")
-        else:
-            print(f"yt-dlp process failed with exit code {e.returncode}")
-            sys.exit(e.returncode)
+        while True:
+            process = subprocess.Popen(cmd, stderr=subprocess.PIPE, text=True)
+            cookie_expired = False
+            
+            # Monitor stderr in real-time for the invalid cookies warning
+            for line in process.stderr:
+                sys.stderr.write(line)
+                sys.stderr.flush()
+                if "The provided YouTube account cookies are no longer valid" in line:
+                    print("\n[WARNING] YouTube cookies rotated! Restarting yt-dlp to extract fresh cookies from Chrome...", file=sys.stderr)
+                    process.terminate()
+                    cookie_expired = True
+                    break
+                    
+            process.wait()
+            
+            if cookie_expired:
+                continue # Loop back around and execute yt-dlp again!
+                
+            if process.returncode != 0 and process.returncode != 101: # 101 is max-downloads exit code
+                sys.exit(process.returncode)
+                
+            break # If it finishes without expiring, break out of loop!
+            
+    except KeyboardInterrupt:
+        if 'process' in locals():
+            process.terminate()
+        sys.exit(1)
     except FileNotFoundError:
         print("Error: 'yt-dlp' executable not found. Please ensure it is installed and in your PATH.")
         sys.exit(1)

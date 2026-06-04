@@ -8,3 +8,4 @@ data/
 cookies.txt
 yt-dlp-download.history
 yt-dlp.batch
+__pycache__/
